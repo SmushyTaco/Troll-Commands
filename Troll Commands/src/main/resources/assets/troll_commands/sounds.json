@@ -1,0 +1,22 @@
+{
+  "jumpscare": {
+    "sounds": [
+      "troll_commands:jumpscare"
+    ]
+  },
+  "rick_roll": {
+    "sounds": [
+      "troll_commands:rick_roll"
+    ]
+  },
+  "replay": {
+    "sounds": [
+      "troll_commands:replay"
+    ]
+  },
+  "pumpkin": {
+    "sounds": [
+      "troll_commands:pumpkin"
+    ]
+  }
+}
