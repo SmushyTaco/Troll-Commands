@@ -1,0 +1,9 @@
+{
+  "text.autoconfig.troll_commands.title": "Jumpscare Configuration",
+  "text.autoconfig.troll_commands.option.canBeJumpscared": "Can Be Jumpscared",
+  "text.autoconfig.troll_commands.option.canBeHotDogged": "Can Be Hot Dogged",
+  "text.autoconfig.troll_commands.option.canBeRickRolled": "Can Be Rick Rolled",
+  "text.autoconfig.troll_commands.option.canBeAmongUsed": "Can Be Among Used",
+  "text.autoconfig.troll_commands.option.canBePumpkined": "Can Be Pumpkined",
+  "text.autoconfig.troll_commands.option.canBeReplayed": "Can Be Replayed"
+}
