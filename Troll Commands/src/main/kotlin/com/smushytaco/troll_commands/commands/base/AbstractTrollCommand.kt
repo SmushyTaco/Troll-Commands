@@ -1,4 +1,5 @@
 package com.smushytaco.troll_commands.commands.base
+import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.context.CommandContext
 import com.smushytaco.troll_commands.TrollCommands
@@ -37,7 +38,7 @@ abstract class AbstractTrollCommand(val command: String, private val imagePath: 
             val width = MinecraftClient.getInstance().window.scaledWidth
             val height = MinecraftClient.getInstance().window.scaledHeight
             val textureSize = if (width > height) width else height
-            MinecraftClient.getInstance().textureManager.bindTexture(image)
+            RenderSystem.setShaderTexture(0, image)
             DrawableHelper.drawTexture(matrixStack, 0, 0, 0.0F, 0.0F, width, height, textureSize, textureSize)
         }
         if (sound != null && !MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
