@@ -15,8 +15,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
-
-abstract class AbstractTrollCommand(val command: String, private val imagePath: String?, val sound: SoundEvent? = null) : Command<ServerCommandSource> {
+abstract class AbstractTrollCommand(val command: String, private val imagePaths: Array<String>?, val sound: SoundEvent? = null) : Command<ServerCommandSource> {
     companion object {
         val trollCommands = arrayListOf<AbstractTrollCommand>()
         fun AbstractTrollCommand.resetAllExcept() {
@@ -27,7 +26,6 @@ abstract class AbstractTrollCommand(val command: String, private val imagePath: 
     }
     abstract fun condition(): Boolean
     var isBeingTrolled = false
-    private val image = Identifier(TrollCommands.MOD_ID, imagePath ?: "")
     val packetIdentifier = Identifier(TrollCommands.MOD_ID, "${command}_boolean")
     lateinit var soundInstance: CustomSoundInstance
     override fun run(context: CommandContext<ServerCommandSource>): Int {
@@ -35,12 +33,13 @@ abstract class AbstractTrollCommand(val command: String, private val imagePath: 
         return 0
     }
     fun command(matrixStack: MatrixStack) {
-//        MinecraftClient.getInstance().networkHandler?.connection?.disconnect()
+//        MinecraftClient.getInstance().networkHandler?.connection?.disconnect(TranslatableText("multiplayer.disconnect.flying"))
         if ((isBeingTrolled && !condition() || !isBeingTrolled) && MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
             MinecraftClient.getInstance().soundManager.stop(soundInstance)
         }
         if (!isBeingTrolled || !condition() || MinecraftClient.getInstance().player == null) return
-        if (imagePath != null) {
+        if (!imagePaths.isNullOrEmpty()) {
+            val image = Identifier(TrollCommands.MOD_ID, imagePaths.random())
             val width = MinecraftClient.getInstance().window.scaledWidth.toFloat()
             val height = MinecraftClient.getInstance().window.scaledHeight.toFloat()
             RenderSystem.setShaderTexture(0, image)
