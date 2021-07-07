@@ -26,19 +26,24 @@ abstract class AbstractTrollCommand(val command: String, private val imagePaths:
     }
     abstract fun condition(): Boolean
     var isBeingTrolled = false
+        set(value) {
+            field = value
+            if (!imagePaths.isNullOrEmpty()) currentImage = imagePaths.random()
+        }
     val packetIdentifier = Identifier(TrollCommands.MOD_ID, "${command}_boolean")
     lateinit var soundInstance: CustomSoundInstance
     override fun run(context: CommandContext<ServerCommandSource>): Int {
         ServerPlayNetworking.send(context.source.player, packetIdentifier, PacketByteBufs.empty())
         return 0
     }
+    private var currentImage: String? = null
     open fun command(matrixStack: MatrixStack) {
         if ((isBeingTrolled && !condition() || !isBeingTrolled) && MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
             MinecraftClient.getInstance().soundManager.stop(soundInstance)
         }
         if (!isBeingTrolled || !condition() || MinecraftClient.getInstance().player == null) return
-        if (!imagePaths.isNullOrEmpty()) {
-            val image = Identifier(TrollCommands.MOD_ID, imagePaths.random())
+        if (!imagePaths.isNullOrEmpty() && currentImage != null) {
+            val image = Identifier(TrollCommands.MOD_ID, currentImage)
             val width = MinecraftClient.getInstance().window.scaledWidth.toFloat()
             val height = MinecraftClient.getInstance().window.scaledHeight.toFloat()
             RenderSystem.setShaderTexture(0, image)
