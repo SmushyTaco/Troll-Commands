@@ -6,11 +6,16 @@ import com.smushytaco.troll_commands.TrollCommands
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.DrawableHelper
+import net.minecraft.client.render.BufferRenderer
+import net.minecraft.client.render.GameRenderer
+import net.minecraft.client.render.Tessellator
+import net.minecraft.client.render.VertexFormat.DrawMode
+import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
+
 abstract class AbstractTrollCommand(val command: String, private val imagePath: String?, val sound: SoundEvent? = null) : Command<ServerCommandSource> {
     companion object {
         val trollCommands = arrayListOf<AbstractTrollCommand>()
@@ -30,16 +35,24 @@ abstract class AbstractTrollCommand(val command: String, private val imagePath: 
         return 0
     }
     fun command(matrixStack: MatrixStack) {
+//        MinecraftClient.getInstance().networkHandler?.connection?.disconnect()
         if ((isBeingTrolled && !condition() || !isBeingTrolled) && MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
             MinecraftClient.getInstance().soundManager.stop(soundInstance)
         }
         if (!isBeingTrolled || !condition() || MinecraftClient.getInstance().player == null) return
         if (imagePath != null) {
-            val width = MinecraftClient.getInstance().window.scaledWidth
-            val height = MinecraftClient.getInstance().window.scaledHeight
-            val textureSize = if (width > height) width else height
+            val width = MinecraftClient.getInstance().window.scaledWidth.toFloat()
+            val height = MinecraftClient.getInstance().window.scaledHeight.toFloat()
             RenderSystem.setShaderTexture(0, image)
-            DrawableHelper.drawTexture(matrixStack, 0, 0, 0.0F, 0.0F, width, height, textureSize, textureSize)
+            RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+            val bufferBuilder = Tessellator.getInstance().buffer
+            bufferBuilder.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
+            bufferBuilder.vertex(matrixStack.peek().model, 0.0F, height, -0.90F).texture(0.0F, 1.0F).next()
+            bufferBuilder.vertex(matrixStack.peek().model, width, height, -0.90F).texture(1.0F, 1.0F).next()
+            bufferBuilder.vertex(matrixStack.peek().model, width, 0.0F, -0.90F).texture(1.0F, 0.0F).next()
+            bufferBuilder.vertex(matrixStack.peek().model, 0.0F, 0.0F, -0.90F).texture(0.0F, 0.0F).next()
+            bufferBuilder.end()
+            BufferRenderer.draw(bufferBuilder)
         }
         if (sound != null && !MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
             MinecraftClient.getInstance().soundManager.play(soundInstance)
