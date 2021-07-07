@@ -38,6 +38,7 @@ object TrollCommands : ModInitializer {
         AmongUsCommand
         PumpkinCommand
         ReplayCommand
+        CrashCommand
         CommandRegistrationCallback.EVENT.register(CommandRegistrationCallback { dispatcher, _ ->
             AbstractTrollCommand.trollCommands.forEach {
                 dispatcher.register(CommandManager.literal(it.command).executes(it))

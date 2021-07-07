@@ -32,8 +32,7 @@ abstract class AbstractTrollCommand(val command: String, private val imagePaths:
         ServerPlayNetworking.send(context.source.player, packetIdentifier, PacketByteBufs.empty())
         return 0
     }
-    fun command(matrixStack: MatrixStack) {
-//        MinecraftClient.getInstance().networkHandler?.connection?.disconnect(TranslatableText("multiplayer.disconnect.flying"))
+    open fun command(matrixStack: MatrixStack) {
         if ((isBeingTrolled && !condition() || !isBeingTrolled) && MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
             MinecraftClient.getInstance().soundManager.stop(soundInstance)
         }
