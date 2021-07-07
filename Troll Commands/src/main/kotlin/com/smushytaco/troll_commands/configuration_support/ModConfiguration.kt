@@ -17,4 +17,6 @@ class ModConfiguration: ConfigData {
     val canBePumpkined = true
     @Comment("Default value is yes. If set to yes you'll be able to be replayed. If set to no you won't be able to.")
     val canBeReplayed = true
+    @Comment("Default value is yes. If set to yes you'll be able to be crashed. If set to no you won't be able to.")
+    val canBeCrashed = true
 }
