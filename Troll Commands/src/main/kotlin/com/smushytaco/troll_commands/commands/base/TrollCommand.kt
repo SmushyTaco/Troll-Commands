@@ -1,6 +1,7 @@
 package com.smushytaco.troll_commands.commands.base
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.brigadier.Command
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import com.smushytaco.troll_commands.TrollCommands
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
@@ -12,19 +13,21 @@ import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat.DrawMode
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.command.argument.EntityArgumentType
+import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
-abstract class AbstractTrollCommand(val command: String, private val imagePaths: Array<String>?, val sound: SoundEvent? = null) : Command<ServerCommandSource> {
+open class TrollCommand private constructor(private val command: String, val condition: BooleanReturn, private val imagePaths: Array<String>?, val sound: SoundEvent? = null, private val isSubCommand: Boolean) : Command<ServerCommandSource> {
+    constructor(command: String, condition: BooleanReturn, imagePaths: Array<String>?, sound: SoundEvent? = null) : this(command, condition, imagePaths, sound, false)
     companion object {
-        val trollCommands = arrayListOf<AbstractTrollCommand>()
-        fun AbstractTrollCommand.resetAllExcept() {
-            trollCommands.forEach {
+        private const val ARGUMENT_KEY = "name"
+        fun TrollCommand.resetAllExcept() {
+            TrollCommands.trollCommands.forEach {
                 if (it != this) it.isBeingTrolled = false
             }
         }
     }
-    abstract fun condition(): Boolean
     var isBeingTrolled = false
         set(value) {
             field = value
@@ -32,8 +35,16 @@ abstract class AbstractTrollCommand(val command: String, private val imagePaths:
         }
     val packetIdentifier = Identifier(TrollCommands.MOD_ID, "${command}_boolean")
     lateinit var soundInstance: CustomSoundInstance
+    private val asSubCommand
+        get() = TrollCommand(command, condition, imagePaths, sound, true)
+    fun register(dispatcher: CommandDispatcher<ServerCommandSource>) {
+        dispatcher.register(CommandManager.literal(command).executes(this).then(CommandManager.argument(ARGUMENT_KEY, EntityArgumentType.players()).requires { serverCommandSource -> serverCommandSource.hasPermissionLevel(2) }.executes(asSubCommand)))
+    }
     override fun run(context: CommandContext<ServerCommandSource>): Int {
-        ServerPlayNetworking.send(context.source.player, packetIdentifier, PacketByteBufs.empty())
+        val players = if (isSubCommand) EntityArgumentType.getPlayers(context, ARGUMENT_KEY).distinct() else listOf(context.source.player)
+        players.forEach {
+            ServerPlayNetworking.send(it, packetIdentifier, PacketByteBufs.empty())
+        }
         return 0
     }
     private var currentImage: String? = null

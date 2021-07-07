@@ -1,28 +1,28 @@
 package com.smushytaco.troll_commands
-import com.smushytaco.troll_commands.commands.*
-import com.smushytaco.troll_commands.commands.base.AbstractTrollCommand
+import com.smushytaco.troll_commands.commands.base.TrollCommand
+import com.smushytaco.troll_commands.commands.base.TrollKickCommand
 import com.smushytaco.troll_commands.configuration_support.ModConfiguration
 import me.shedaniel.autoconfig.AutoConfig
 import me.shedaniel.autoconfig.annotation.Config
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
-import net.minecraft.server.command.CommandManager
 import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 object TrollCommands : ModInitializer {
     const val MOD_ID = "troll_commands"
-    lateinit var config: ModConfiguration
-        private set
+    private lateinit var config: ModConfiguration
     private val JUMPSCARE_IDENTIFIER = Identifier(MOD_ID, "jumpscare")
-    val JUMPSCARE = SoundEvent(JUMPSCARE_IDENTIFIER)
+    private val JUMPSCARE = SoundEvent(JUMPSCARE_IDENTIFIER)
     private val RICK_ROLL_IDENTIFIER = Identifier(MOD_ID, "rick_roll")
-    val RICK_ROLL = SoundEvent(RICK_ROLL_IDENTIFIER)
+    private val RICK_ROLL = SoundEvent(RICK_ROLL_IDENTIFIER)
     private val PUMPKIN_IDENTIFIER = Identifier(MOD_ID, "pumpkin")
-    val PUMPKIN = SoundEvent(PUMPKIN_IDENTIFIER)
+    private val PUMPKIN = SoundEvent(PUMPKIN_IDENTIFIER)
     private val REPLAY_IDENTIFIER = Identifier(MOD_ID, "replay")
-    val REPLAY = SoundEvent(REPLAY_IDENTIFIER)
+    private val REPLAY = SoundEvent(REPLAY_IDENTIFIER)
+    lateinit var trollCommands: HashSet<TrollCommand>
+        private set
     override fun onInitialize() {
         Registry.register(Registry.SOUND_EVENT, JUMPSCARE_IDENTIFIER, JUMPSCARE)
         Registry.register(Registry.SOUND_EVENT, RICK_ROLL_IDENTIFIER, RICK_ROLL)
@@ -32,17 +32,16 @@ object TrollCommands : ModInitializer {
             GsonConfigSerializer(definition, configClass)
         }
         config = AutoConfig.getConfigHolder(ModConfiguration::class.java).config
-        JumpscareCommand
-        HotDogCommand
-        RickRollCommand
-        AmongUsCommand
-        PumpkinCommand
-        ReplayCommand
-        CrashCommand
+        trollCommands = hashSetOf(
+            TrollCommand("amongus", { config.canBeAmongUsed }, arrayOf("textures/amongus_command/among_us.png")),
+            TrollKickCommand("crash", { config.canBeCrashed }, arrayOf("textures/crash_command/anus.jpg", "textures/crash_command/burned.jpg", "textures/crash_command/dog.jpg", "textures/crash_command/dog2.jpg", "textures/crash_command/dog3.jpg", "textures/crash_command/furries.jpeg", "textures/crash_command/goat.jpg", "textures/crash_command/hotdog.png", "textures/crash_command/sock.jpg")),
+            TrollCommand("hotdog", { config.canBeHotDogged }, arrayOf("textures/hotdog_command/hot_dog.png")),
+            TrollCommand("jumpscare", { config.canBeJumpscared }, arrayOf("textures/jumpscare_command/jumpscare.png"), JUMPSCARE),
+            TrollCommand("pumpkin", { config.canBePumpkined }, null, PUMPKIN),
+            TrollCommand("replay", { config.canBeReplayed }, null, REPLAY),
+            TrollCommand("rickroll", { config.canBeRickRolled }, null, RICK_ROLL)
+        )
         CommandRegistrationCallback.EVENT.register(CommandRegistrationCallback { dispatcher, _ ->
-            AbstractTrollCommand.trollCommands.forEach {
-                dispatcher.register(CommandManager.literal(it.command).executes(it))
-            }
-        })
+            trollCommands.forEach { it.register(dispatcher) } })
     }
 }

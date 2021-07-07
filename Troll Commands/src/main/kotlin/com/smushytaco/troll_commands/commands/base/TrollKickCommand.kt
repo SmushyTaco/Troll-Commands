@@ -4,7 +4,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.sound.SoundEvent
 import net.minecraft.text.TranslatableText
-abstract class AbstractTrollKickCommand(command: String, imagePaths: Array<String>?, sound: SoundEvent? = null): AbstractTrollCommand(command, imagePaths, sound) {
+class TrollKickCommand(command: String, condition: BooleanReturn, imagePaths: Array<String>?, sound: SoundEvent? = null): TrollCommand(command, condition, imagePaths, sound) {
     private val disconnectJob
         get() = CoroutineScope(Dispatchers.Default).launch {
             if (!isBeingTrolled || !condition() || MinecraftClient.getInstance().player == null) return@launch
