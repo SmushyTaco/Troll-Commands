@@ -61,10 +61,10 @@ open class TrollCommand private constructor(private val command: String, val con
             RenderSystem.setShader { GameRenderer.getPositionTexShader() }
             val bufferBuilder = Tessellator.getInstance().buffer
             bufferBuilder.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
-            bufferBuilder.vertex(matrixStack.peek().model, 0.0F, height, -0.90F).texture(0.0F, 1.0F).next()
-            bufferBuilder.vertex(matrixStack.peek().model, width, height, -0.90F).texture(1.0F, 1.0F).next()
-            bufferBuilder.vertex(matrixStack.peek().model, width, 0.0F, -0.90F).texture(1.0F, 0.0F).next()
-            bufferBuilder.vertex(matrixStack.peek().model, 0.0F, 0.0F, -0.90F).texture(0.0F, 0.0F).next()
+            bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, height, -0.90F).texture(0.0F, 1.0F).next()
+            bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, height, -0.90F).texture(1.0F, 1.0F).next()
+            bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, 0.0F, -0.90F).texture(1.0F, 0.0F).next()
+            bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, 0.0F, -0.90F).texture(0.0F, 0.0F).next()
             bufferBuilder.end()
             BufferRenderer.draw(bufferBuilder)
         }
