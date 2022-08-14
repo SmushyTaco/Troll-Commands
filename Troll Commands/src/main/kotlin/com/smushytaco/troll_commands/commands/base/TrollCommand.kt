@@ -65,8 +65,7 @@ open class TrollCommand private constructor(private val command: String, val con
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, height, -0.90F).texture(1.0F, 1.0F).next()
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, 0.0F, -0.90F).texture(1.0F, 0.0F).next()
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, 0.0F, -0.90F).texture(0.0F, 0.0F).next()
-            bufferBuilder.end()
-            BufferRenderer.draw(bufferBuilder)
+            BufferRenderer.drawWithShader(bufferBuilder.end())
         }
         if (sound != null && !MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
             MinecraftClient.getInstance().soundManager.play(soundInstance)
