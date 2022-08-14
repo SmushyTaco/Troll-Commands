@@ -6,7 +6,7 @@ import me.shedaniel.autoconfig.AutoConfig
 import me.shedaniel.autoconfig.annotation.Config
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -41,7 +41,7 @@ object TrollCommands : ModInitializer {
             TrollCommand("replay", { config.canBeReplayed }, null, REPLAY),
             TrollCommand("rickroll", { config.canBeRickRolled }, null, RICK_ROLL)
         )
-        CommandRegistrationCallback.EVENT.register(CommandRegistrationCallback { dispatcher, _ ->
+        CommandRegistrationCallback.EVENT.register(CommandRegistrationCallback { dispatcher, _, _ ->
             trollCommands.forEach { it.register(dispatcher) } })
     }
 }
