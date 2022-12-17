@@ -58,14 +58,14 @@ open class TrollCommand private constructor(private val command: String, val con
             val width = MinecraftClient.getInstance().window.scaledWidth.toFloat()
             val height = MinecraftClient.getInstance().window.scaledHeight.toFloat()
             RenderSystem.setShaderTexture(0, image)
-            RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+            RenderSystem.setShader { GameRenderer.getPositionTexProgram() }
             val bufferBuilder = Tessellator.getInstance().buffer
             bufferBuilder.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, height, -0.90F).texture(0.0F, 1.0F).next()
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, height, -0.90F).texture(1.0F, 1.0F).next()
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, 0.0F, -0.90F).texture(1.0F, 0.0F).next()
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, 0.0F, -0.90F).texture(0.0F, 0.0F).next()
-            BufferRenderer.drawWithShader(bufferBuilder.end())
+            BufferRenderer.drawWithGlobalProgram(bufferBuilder.end())
         }
         if (sound != null && !MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
             MinecraftClient.getInstance().soundManager.play(soundInstance)
