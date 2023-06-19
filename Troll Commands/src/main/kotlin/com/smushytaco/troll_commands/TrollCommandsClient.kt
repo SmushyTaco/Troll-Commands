@@ -18,9 +18,9 @@ object TrollCommandsClient: ClientModInitializer {
                 }
             }
         }
-        HudRenderCallback.EVENT.register(HudRenderCallback { matrixStack, _ ->
+        HudRenderCallback.EVENT.register(HudRenderCallback { context, _ ->
             TrollCommands.trollCommands.forEach {
-                it.command(matrixStack)
+                it.command(context.matrices)
             }
         })
     }
