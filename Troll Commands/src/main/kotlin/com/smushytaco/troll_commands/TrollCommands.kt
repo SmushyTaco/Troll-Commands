@@ -35,13 +35,14 @@ object TrollCommands : ModInitializer {
         config = AutoConfig.getConfigHolder(ModConfiguration::class.java).config
         trollCommands = hashSetOf(
             TrollCommand("amongus", { config.canBeAmongUsed }, arrayOf("textures/amongus_command/among_us.png")),
-            TrollKickCommand("crash", { config.canBeCrashed }, arrayOf("textures/crash_command/anus.jpg", "textures/crash_command/burned.jpg", "textures/crash_command/dog.jpg", "textures/crash_command/dog2.jpg", "textures/crash_command/dog3.jpg", "textures/crash_command/furries.jpeg", "textures/crash_command/goat.jpg", "textures/crash_command/hotdog.png", "textures/crash_command/sock.jpg")),
+            TrollKickCommand("crash", { config.canBeCrashed }, arrayOf("textures/crash_command/anus.png", "textures/crash_command/burned.png", "textures/crash_command/dog.png", "textures/crash_command/dog2.png", "textures/crash_command/dog3.png", "textures/crash_command/furries.png", "textures/crash_command/goat.png", "textures/crash_command/hotdog.png", "textures/crash_command/sock.png")),
             TrollCommand("hotdog", { config.canBeHotDogged }, arrayOf("textures/hotdog_command/hot_dog.png")),
             TrollCommand("jumpscare", { config.canBeJumpscared }, arrayOf("textures/jumpscare_command/jumpscare.png"), JUMPSCARE),
             TrollCommand("pumpkin", { config.canBePumpkined }, null, PUMPKIN),
             TrollCommand("replay", { config.canBeReplayed }, null, REPLAY),
             TrollCommand("rickroll", { config.canBeRickRolled }, null, RICK_ROLL)
         )
+        trollCommands.forEach { it.emptyPayload.register() }
         CommandRegistrationCallback.EVENT.register(CommandRegistrationCallback { dispatcher, _, _ ->
             trollCommands.forEach { it.register(dispatcher) } })
     }
