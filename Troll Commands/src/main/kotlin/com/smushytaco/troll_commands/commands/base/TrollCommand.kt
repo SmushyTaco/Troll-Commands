@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import com.smushytaco.troll_commands.TrollCommands
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.BufferRenderer
@@ -33,7 +32,7 @@ open class TrollCommand private constructor(private val command: String, val con
             field = value
             if (!imagePaths.isNullOrEmpty()) currentImage = imagePaths.random()
         }
-    val packetIdentifier = Identifier(TrollCommands.MOD_ID, "${command}_boolean")
+    val emptyPayload = EmptyPayload(Identifier(TrollCommands.MOD_ID, "${command}_boolean"))
     lateinit var soundInstance: CustomSoundInstance
     private val asSubCommand
         get() = TrollCommand(command, condition, imagePaths, sound, true)
@@ -43,7 +42,7 @@ open class TrollCommand private constructor(private val command: String, val con
     override fun run(context: CommandContext<ServerCommandSource>): Int {
         val players = if (isSubCommand) EntityArgumentType.getPlayers(context, ARGUMENT_KEY).distinct() else listOf(context.source.player)
         players.forEach {
-            ServerPlayNetworking.send(it, packetIdentifier, PacketByteBufs.empty())
+            ServerPlayNetworking.send(it, emptyPayload)
         }
         return 0
     }
