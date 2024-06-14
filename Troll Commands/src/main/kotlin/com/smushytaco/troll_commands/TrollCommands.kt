@@ -14,13 +14,13 @@ import net.minecraft.util.Identifier
 object TrollCommands : ModInitializer {
     const val MOD_ID = "troll_commands"
     private lateinit var config: ModConfiguration
-    private val JUMPSCARE_IDENTIFIER = Identifier(MOD_ID, "jumpscare")
+    private val JUMPSCARE_IDENTIFIER = Identifier.of(MOD_ID, "jumpscare")
     private val JUMPSCARE = SoundEvent.of(JUMPSCARE_IDENTIFIER)
-    private val RICK_ROLL_IDENTIFIER = Identifier(MOD_ID, "rick_roll")
+    private val RICK_ROLL_IDENTIFIER = Identifier.of(MOD_ID, "rick_roll")
     private val RICK_ROLL = SoundEvent.of(RICK_ROLL_IDENTIFIER)
-    private val PUMPKIN_IDENTIFIER = Identifier(MOD_ID, "pumpkin")
+    private val PUMPKIN_IDENTIFIER = Identifier.of(MOD_ID, "pumpkin")
     private val PUMPKIN = SoundEvent.of(PUMPKIN_IDENTIFIER)
-    private val REPLAY_IDENTIFIER = Identifier(MOD_ID, "replay")
+    private val REPLAY_IDENTIFIER = Identifier.of(MOD_ID, "replay")
     private val REPLAY = SoundEvent.of(REPLAY_IDENTIFIER)
     lateinit var trollCommands: HashSet<TrollCommand>
         private set
