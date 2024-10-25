@@ -6,8 +6,8 @@ import com.mojang.brigadier.context.CommandContext
 import com.smushytaco.troll_commands.TrollCommands
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.render.BufferRenderer
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat.DrawMode
 import net.minecraft.client.render.VertexFormats
@@ -57,7 +57,7 @@ open class TrollCommand private constructor(private val command: String, val con
             val width = MinecraftClient.getInstance().window.scaledWidth.toFloat()
             val height = MinecraftClient.getInstance().window.scaledHeight.toFloat()
             RenderSystem.setShaderTexture(0, image)
-            RenderSystem.setShader { GameRenderer.getPositionTexProgram() }
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX)
             val bufferBuilder = Tessellator.getInstance().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, height, -0.90F).texture(0.0F, 1.0F)
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, height, -0.90F).texture(1.0F, 1.0F)
