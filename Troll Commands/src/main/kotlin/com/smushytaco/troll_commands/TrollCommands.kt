@@ -1,10 +1,6 @@
 package com.smushytaco.troll_commands
 import com.smushytaco.troll_commands.commands.base.TrollCommand
 import com.smushytaco.troll_commands.commands.base.TrollKickCommand
-import com.smushytaco.troll_commands.configuration_support.ModConfiguration
-import me.shedaniel.autoconfig.AutoConfig
-import me.shedaniel.autoconfig.annotation.Config
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.registry.Registries
@@ -13,7 +9,7 @@ import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
 object TrollCommands : ModInitializer {
     const val MOD_ID = "troll_commands"
-    private lateinit var config: ModConfiguration
+    private val config = ModConfig.createAndLoad()
     private val JUMPSCARE_IDENTIFIER = Identifier.of(MOD_ID, "jumpscare")
     private val JUMPSCARE = SoundEvent.of(JUMPSCARE_IDENTIFIER)
     private val RICK_ROLL_IDENTIFIER = Identifier.of(MOD_ID, "rick_roll")
@@ -29,10 +25,6 @@ object TrollCommands : ModInitializer {
         Registry.register(Registries.SOUND_EVENT, RICK_ROLL_IDENTIFIER, RICK_ROLL)
         Registry.register(Registries.SOUND_EVENT, PUMPKIN_IDENTIFIER, PUMPKIN)
         Registry.register(Registries.SOUND_EVENT, REPLAY_IDENTIFIER, REPLAY)
-        AutoConfig.register(ModConfiguration::class.java) { definition: Config, configClass: Class<ModConfiguration> ->
-            GsonConfigSerializer(definition, configClass)
-        }
-        config = AutoConfig.getConfigHolder(ModConfiguration::class.java).config
         trollCommands = hashSetOf(
             TrollCommand("amongus", { config.canBeAmongUsed }, arrayOf("textures/amongus_command/among_us.png")),
             TrollKickCommand("crash", { config.canBeCrashed }, arrayOf("textures/crash_command/anus.png", "textures/crash_command/burned.png", "textures/crash_command/dog.png", "textures/crash_command/dog2.png", "textures/crash_command/dog3.png", "textures/crash_command/furries.png", "textures/crash_command/goat.png", "textures/crash_command/hotdog.png", "textures/crash_command/sock.png")),
