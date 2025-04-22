@@ -5,10 +5,9 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import com.smushytaco.troll_commands.TrollCommands
+import com.smushytaco.troll_commands.TrollCommandsClient
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.ShaderProgramKeys
-import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
@@ -17,6 +16,7 @@ import net.minecraft.server.command.CommandManager
 import net.minecraft.server.command.ServerCommandSource
 import net.minecraft.sound.SoundEvent
 import net.minecraft.util.Identifier
+import java.util.OptionalInt
 open class TrollCommand private constructor(private val command: String, val condition: BooleanReturn, private val imagePaths: Array<String>?, val sound: SoundEvent? = null, private val isSubCommand: Boolean) : Command<ServerCommandSource> {
     constructor(command: String, condition: BooleanReturn, imagePaths: Array<String>?, sound: SoundEvent? = null) : this(command, condition, imagePaths, sound, false)
     companion object {
@@ -56,14 +56,23 @@ open class TrollCommand private constructor(private val command: String, val con
             val image = Identifier.of(TrollCommands.MOD_ID, currentImage)
             val width = MinecraftClient.getInstance().window.scaledWidth.toFloat()
             val height = MinecraftClient.getInstance().window.scaledHeight.toFloat()
-            RenderSystem.setShaderTexture(0, image)
-            RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX)
-            val bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
+            val gpuTexture = MinecraftClient.getInstance().textureManager.getTexture(image).glTexture
+            val bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE)
+            bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, 0.0F, -0.90F).texture(0.0F, 0.0F)
+            bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, height, -0.90F).texture(0.0F, 1.0F)
+            bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, 0.0F, -0.90F).texture(1.0F, 0.0F)
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, height, -0.90F).texture(0.0F, 1.0F)
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, height, -0.90F).texture(1.0F, 1.0F)
             bufferBuilder.vertex(matrixStack.peek().positionMatrix, width, 0.0F, -0.90F).texture(1.0F, 0.0F)
-            bufferBuilder.vertex(matrixStack.peek().positionMatrix, 0.0F, 0.0F, -0.90F).texture(0.0F, 0.0F)
-            BufferRenderer.drawWithGlobalProgram(bufferBuilder.end())
+            bufferBuilder.end().use { builtBuffer ->
+                val vertexGpuBuffer = VertexFormats.POSITION_TEXTURE.uploadImmediateVertexBuffer(builtBuffer.buffer)
+                RenderSystem.getDevice().createCommandEncoder().createRenderPass(MinecraftClient.getInstance().framebuffer.colorAttachment, OptionalInt.empty()).use { renderPass ->
+                    renderPass.setPipeline(TrollCommandsClient.TROLL_RENDER_PIPELINE)
+                    renderPass.setVertexBuffer(0, vertexGpuBuffer)
+                    renderPass.bindSampler("Sampler0", gpuTexture)
+                    renderPass.draw(0, 6)
+                }
+            }
         }
         if (sound != null && !MinecraftClient.getInstance().soundManager.isPlaying(soundInstance)) {
             MinecraftClient.getInstance().soundManager.play(soundInstance)
