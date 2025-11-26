@@ -12,7 +12,7 @@
     "issues": "https://www.curseforge.com/minecraft/mc-mods/troll_commands/issues/",
     "sources": "https://github.com/SmushyTaco/Troll-Commands/"
   },
-  "license": "GNU Lesser General Public License version 3 (LGPLv3)",
+  "license": "Apache-2.0",
   "icon": "assets/troll_commands/icon.png",
   "environment": "*",
   "entrypoints": {
