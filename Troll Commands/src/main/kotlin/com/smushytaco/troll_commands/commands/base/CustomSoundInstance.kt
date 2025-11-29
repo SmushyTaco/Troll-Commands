@@ -1,13 +1,13 @@
 package com.smushytaco.troll_commands.commands.base
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.sound.MovingSoundInstance
-import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvent
-import net.minecraft.sound.SoundEvents
-import net.minecraft.util.math.random.Random
-class CustomSoundInstance(sound: SoundEvent?): MovingSoundInstance(sound ?: SoundEvents.BLOCK_SAND_BREAK, SoundCategory.MASTER, Random.create()) {
+import net.minecraft.client.Minecraft
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance
+import net.minecraft.sounds.SoundEvent
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.sounds.SoundSource
+import net.minecraft.util.RandomSource
+class CustomSoundInstance(sound: SoundEvent?): AbstractTickableSoundInstance(sound ?: SoundEvents.SAND_BREAK, SoundSource.MASTER, RandomSource.create()) {
     override fun tick() {
-        val player = MinecraftClient.getInstance().player ?: return
+        val player = Minecraft.getInstance().player ?: return
         x = player.x
         y = player.y
         z = player.z

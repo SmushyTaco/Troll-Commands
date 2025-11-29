@@ -1,22 +1,22 @@
 package com.smushytaco.troll_commands.commands.base
 import kotlinx.coroutines.*
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.sound.SoundEvent
-import net.minecraft.text.Text
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.network.chat.Component
+import net.minecraft.sounds.SoundEvent
 class TrollKickCommand(command: String, condition: BooleanReturn, imagePaths: Array<String>?, sound: SoundEvent? = null): TrollCommand(command, condition, imagePaths, sound) {
     private val disconnectJob
         get() = CoroutineScope(Dispatchers.Default).launch {
-            if (!isBeingTrolled || !condition() || MinecraftClient.getInstance().player == null) return@launch
+            if (!isBeingTrolled || !condition() || Minecraft.getInstance().player == null) return@launch
             delay(1000)
-            if (!isBeingTrolled || !condition() || MinecraftClient.getInstance().player == null) return@launch
+            if (!isBeingTrolled || !condition() || Minecraft.getInstance().player == null) return@launch
             isBeingTrolled = false
-            MinecraftClient.getInstance().networkHandler?.connection?.disconnect(Text.translatable("multiplayer.disconnect.flying"))
+            Minecraft.getInstance().connection?.connection?.disconnect(Component.translatable("multiplayer.disconnect.flying"))
         }
     private lateinit var cachedDisconnectJob: Job
-    override fun command(context: DrawContext) {
+    override fun command(context: GuiGraphics) {
         super.command(context)
-        if ((!::cachedDisconnectJob.isInitialized || !cachedDisconnectJob.isActive) && MinecraftClient.getInstance().player != null && condition() && isBeingTrolled) {
+        if ((!::cachedDisconnectJob.isInitialized || !cachedDisconnectJob.isActive) && Minecraft.getInstance().player != null && condition() && isBeingTrolled) {
             cachedDisconnectJob = disconnectJob
         }
     }

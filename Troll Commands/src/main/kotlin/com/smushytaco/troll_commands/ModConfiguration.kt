@@ -1,5 +1,6 @@
 package com.smushytaco.troll_commands
-import io.wispforest.owo.config.annotation.*
+import io.wispforest.owo.config.annotation.Config
+import io.wispforest.owo.config.annotation.Modmenu
 @Modmenu(modId = TrollCommands.MOD_ID)
 @Config(name = TrollCommands.MOD_ID, wrapperName = "ModConfig")
 @Suppress("UNUSED")
