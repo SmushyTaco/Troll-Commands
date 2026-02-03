@@ -5,18 +5,18 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvent
 object TrollCommands : ModInitializer {
     const val MOD_ID = "troll_commands"
     private val config = ModConfig.createAndLoad()
-    private val JUMPSCARE_IDENTIFIER = ResourceLocation.fromNamespaceAndPath(MOD_ID, "jumpscare")
+    private val JUMPSCARE_IDENTIFIER = Identifier.fromNamespaceAndPath(MOD_ID, "jumpscare")
     private val JUMPSCARE = SoundEvent.createVariableRangeEvent(JUMPSCARE_IDENTIFIER)
-    private val RICK_ROLL_IDENTIFIER = ResourceLocation.fromNamespaceAndPath(MOD_ID, "rick_roll")
+    private val RICK_ROLL_IDENTIFIER = Identifier.fromNamespaceAndPath(MOD_ID, "rick_roll")
     private val RICK_ROLL = SoundEvent.createVariableRangeEvent(RICK_ROLL_IDENTIFIER)
-    private val PUMPKIN_IDENTIFIER = ResourceLocation.fromNamespaceAndPath(MOD_ID, "pumpkin")
+    private val PUMPKIN_IDENTIFIER = Identifier.fromNamespaceAndPath(MOD_ID, "pumpkin")
     private val PUMPKIN = SoundEvent.createVariableRangeEvent(PUMPKIN_IDENTIFIER)
-    private val REPLAY_IDENTIFIER = ResourceLocation.fromNamespaceAndPath(MOD_ID, "replay")
+    private val REPLAY_IDENTIFIER = Identifier.fromNamespaceAndPath(MOD_ID, "replay")
     private val REPLAY = SoundEvent.createVariableRangeEvent(REPLAY_IDENTIFIER)
     lateinit var trollCommands: HashSet<TrollCommand>
         private set

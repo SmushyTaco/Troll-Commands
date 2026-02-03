@@ -5,7 +5,7 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.minecraft.client.Minecraft
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 object TrollCommandsClient: ClientModInitializer {
     override fun onInitializeClient() {
         TrollCommands.trollCommands.forEach {
@@ -19,7 +19,7 @@ object TrollCommandsClient: ClientModInitializer {
                 }
             }
         }
-        HudElementRegistry.addLast(ResourceLocation.fromNamespaceAndPath(TrollCommands.MOD_ID, "image")) { context, _ ->
+        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(TrollCommands.MOD_ID, "image")) { context, _ ->
             TrollCommands.trollCommands.forEach {
                 it.command(context)
             }
