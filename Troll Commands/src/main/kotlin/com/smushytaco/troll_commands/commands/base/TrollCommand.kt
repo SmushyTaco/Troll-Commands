@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext
 import com.smushytaco.troll_commands.TrollCommands
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
@@ -44,7 +44,7 @@ open class TrollCommand private constructor(private val command: String, val con
         return 0
     }
     private var currentImage: String? = null
-    open fun command(context: GuiGraphics) {
+    open fun command(context: GuiGraphicsExtractor) {
         if ((isBeingTrolled && !condition() || !isBeingTrolled) && Minecraft.getInstance().soundManager.isActive(soundInstance)) {
             Minecraft.getInstance().soundManager.stop(soundInstance)
         }

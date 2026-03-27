@@ -6,6 +6,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 class EmptyPayload(private val identifier: Identifier) : CustomPacketPayload {
     override fun type(): CustomPacketPayload.Type<EmptyPayload> = CustomPacketPayload.Type(identifier)
-    fun register() { PayloadTypeRegistry.playS2C().register(type(), StreamCodec.composite(ByteBufCodecs.STRING_UTF8, { it.identifier.toString() }) { EmptyPayload(
+    fun register() { PayloadTypeRegistry.clientboundPlay().register(type(), StreamCodec.composite(ByteBufCodecs.STRING_UTF8, { it.identifier.toString() }) { EmptyPayload(
         Identifier.parse(it)) }) }
 }
